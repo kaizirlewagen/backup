@@ -13,12 +13,17 @@
             "name": "Alexandr Chernyaev",
             "email": "bliz48rus@gmail.com",
             "role": "Developer"
-        }
+        },
+        {
+            "name": "Kai Zirlewagen",
+            "email": "kai@team2work.de",
+            "role": "Developer"
+        }        
     ],
     "require": {
-        "php": "^7.1",
-        "spatie/laravel-backup": "^6.0",
-        "orchid/platform": "^3.8"
+        "php": "^8.0",
+        "spatie/laravel-backup": "*",
+        "orchid/platform": "*"
     },
     "require-dev": {
         "orchestra/testbench": "3.7.*",
