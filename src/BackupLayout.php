@@ -4,28 +4,33 @@ declare(strict_types=1);
 
 namespace Orchid\Backup;
 
-use Orchid\Screen\TD;
 use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\TD;
+use Orchid\Screen\Actions\Link;
 
 class BackupLayout extends Table
 {
     /**
      * @var string
      */
-    public $data = 'backups';
+    public $target = 'backups';
 
     /**
-     * @return array
+     * @return TD[]
      */
-    public function fields(): array
+    protected function columns(): array
     {
         return [
-            TD::set('path', __('Path'))->setRender(function ($file) {
-                return "<a href='{$file['url']}' target='_blank'>{$file['path']}</a>";
+            TD::make('path', __('Path'))
+             ->render(function ($file) {       	
+                return Link::make($file['file'])->route('platform.backups.downloadFile', $file['file']);
             }),
-            TD::set('disk', __('Disk')),
-            TD::set('size', __('Size')),
-            TD::set('last_modified', __('Last change')),
+            
+            TD::make('disk', __('Disk')),
+            TD::make('size', __('Size')),
+            TD::make('last_modified', __('Last change')),
         ];
     }
 }
+
+

@@ -1,0 +1,13 @@
+{
+  "Backups": "Backups",
+  "Enable task queue to backup.": "You need to enable task queue for backup.",
+  "The task has been added to the queue.": "The task has been added to the queue.",
+  "Necessary for the ability to quickly recover information in case of loss of a working copy.": "It is necessary to be able to quickly restore information in case of loss of a working copy.",
+  "Last change": "Last modified",
+  "Path": "Path",
+  "Disk": "Disk",
+  "Size": "Size",
+  "List of files to download" : "Archive files for download",
+  "Create": "Create a job",
+  "Archive downloads and backups": "Archive downloads and backups"
+}

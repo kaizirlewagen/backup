@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Orchid\Backup;
 
 use Carbon\Carbon;
-use Orchid\Screen\Link;
 use Orchid\Screen\Screen;
+use Orchid\Screen\Actions\Button;
 use Orchid\Support\Formats;
 use Orchid\Screen\Repository;
 use Orchid\Support\Facades\Alert;
@@ -16,20 +16,6 @@ use Illuminate\Support\Facades\Storage;
 
 class BackupScreen extends Screen
 {
-    /**
-     * Display header name.
-     *
-     * @var string
-     */
-    public $name = 'Backups';
-
-    /**
-     * Display header description.
-     *
-     * @var string
-     */
-    public $description = 'Archive downloads';
-
     /**
      * @var string
      */
@@ -41,12 +27,26 @@ class BackupScreen extends Screen
     public $disk;
 
     /**
+     * The name is displayed on the user's screen and in the headers
+     */
+    public function name(): ?string
+    {
+        return __("Backups");
+    }    
+
+    /**
+     * The description is displayed on the user's screen under the heading
+     */
+    public function description(): ?string
+    {
+        return __("Archive downloads and backups");
+    }
+
+    /**
      * BackupScreen constructor.
      */
     public function __construct()
     {
-        parent::__construct();
-
         $this->disk = config('backup.backup.destination.disks', []);
     }
 
@@ -68,18 +68,18 @@ class BackupScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::name(__('Create'))
-                ->icon('icon-plus')
-                ->method('runBackup'),
+            Button::make(__('Create'))
+                ->method('runBackup')
+                ->icon('icon-plus'),
         ];
     }
 
     /**
      * Views.
      *
-     * @return array
+     * @return string[]|\Orchid\Screen\Layout[]
      */
-    public function layout(): array
+    public function layout(): iterable
     {
         return [
             BackupLayout::class,
@@ -97,6 +97,7 @@ class BackupScreen extends Screen
             Alert::warning(__('Enable task queue to backup.'));
         } else {
             Alert::info(__('The task has been added to the queue.'));
+            
             Artisan::queue('backup:run');
         }
 
@@ -108,6 +109,8 @@ class BackupScreen extends Screen
      */
     private function getBackups(): array
     {
+        // TODO: error if permission denied
+        
         foreach ($this->disk as $diskName) {
             $disk = Storage::disk($diskName);
             $files = $disk->allFiles();
@@ -125,9 +128,11 @@ class BackupScreen extends Screen
                         'last_modified' => Carbon::createFromTimestamp($disk->lastModified($file))->diffForHumans(),
                         'disk'          => $diskName,
                         'url'           => $disk->url($file),
+                        'file'          => basename($file),
+                        'folder'        => dirname($file),
                     ]);
                 });
-        }
+        }      
 
         // reverse the backups, so the newest one would be on top
         return array_reverse($backups ?? []);
